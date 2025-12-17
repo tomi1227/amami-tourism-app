@@ -46,6 +46,10 @@
       width: 100%;
       border-radius: 8px;
     }
+      #map, #list-map {
+      width: 100%;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -54,6 +58,7 @@
   </header>
 
   <div class="container" id="list">
+    <div id="list-map" style="height:300px; margin-bottom:1rem;"></div>
     <!-- 観光地一覧 -->
   </div>
 
@@ -90,10 +95,14 @@
     ];
 
     const listDiv = document.getElementById('list');
+    const listMapDiv = document.getElementById('list-map');
     const detailDiv = document.getElementById('detail');
 
+    let listMap;
     function showList() {
-      listDiv.innerHTML = '';
+      listDiv.innerHTML = '<div id="list-map" style="height:300px; margin-bottom:1rem;"></div>';
+      const mapContainer = document.getElementById('list-map');
+
       spots.forEach((spot) => {
         const div = document.createElement('div');
         div.className = 'spot';
@@ -101,6 +110,18 @@
         div.onclick = () => showDetail(spot);
         listDiv.appendChild(div);
       });
+
+      listMap = L.map(mapContainer).setView([28.38, 129.55], 11);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(listMap);
+
+      spots.forEach((spot) => {
+        L.marker([spot.lat, spot.lng])
+          .addTo(listMap)
+          .bindPopup(spot.name);
+      });
+    });
     }
 
     let map;
@@ -136,5 +157,4 @@
   </script>
 </body>
 </html>
-
 
