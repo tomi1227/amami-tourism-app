@@ -42,6 +42,10 @@
       color: white;
       cursor: pointer;
     }
+      #map {
+      width: 100%;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -56,23 +60,32 @@
   <div class="container" id="detail">
     <h2 id="detail-name"></h2>
     <p id="detail-desc"></p>
+    <div id="map" style="height:300px; margin-bottom:1rem;"></div>
     <button onclick="backToList()">一覧に戻る</button>
   </div>
 
-  <script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
     // 観光地データ（仮）
     const spots = [
       {
         name: "あやまる岬",
-        desc: "奄美空港近くにある絶景スポット。青い海と芝生が特徴。"
+        desc: "奄美空港近くにある絶景スポット。青い海と芝生が特徴。",
+        lat: 28.4306,
+        lng: 129.7120
       },
       {
         name: "金作原原生林",
-        desc: "亜熱帯の自然が残る原生林。ガイド同行が推奨される。"
+        desc: "亜熱帯の自然が残る原生林。ガイド同行が推奨される。",
+        lat: 28.3756,
+        lng: 129.6274
       },
       {
         name: "大浜海浜公園",
-        desc: "夕日が美しいビーチ。市街地からのアクセスも良い。"
+        desc: "夕日が美しいビーチ。市街地からのアクセスも良い。",
+        lat: 28.3809,
+        lng: 129.4939
       }
     ];
 
@@ -90,11 +103,27 @@
       });
     }
 
+    let map;
     function showDetail(spot) {
       document.getElementById('detail-name').textContent = spot.name;
       document.getElementById('detail-desc').textContent = spot.desc;
       listDiv.style.display = 'none';
       detailDiv.style.display = 'block';
+
+      if (map) {
+        map.remove();
+      }
+
+      map = L.map('map').setView([spot.lat, spot.lng], 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      L.marker([spot.lat, spot.lng])
+        .addTo(map)
+        .bindPopup(spot.name)
+        .openPopup();
     }
 
     function backToList() {
@@ -107,4 +136,5 @@
   </script>
 </body>
 </html>
+
 
